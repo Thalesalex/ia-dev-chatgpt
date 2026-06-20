@@ -132,13 +132,8 @@ function render() {
 }
 
 function renderTicketList() {
-  const term = searchInput.value.trim().toLowerCase();
-  const filteredTickets = tickets.filter((ticket) => {
-    return (
-      String(ticket.id).includes(term) ||
-      ticket.title.toLowerCase().includes(term)
-    );
-  });
+  const term = normalizeSearchValue(searchInput.value);
+  const filteredTickets = tickets.filter((ticket) => matchesTicketSearch(ticket, term));
 
   ticketCounter.textContent = `${filteredTickets.length} chamado${filteredTickets.length === 1 ? "" : "s"}`;
 
@@ -165,6 +160,28 @@ function renderTicketList() {
       renderTicketDetails();
     });
   });
+}
+
+function matchesTicketSearch(ticket, term) {
+  if (!term) {
+    return true;
+  }
+
+  const searchableFields = [
+    ticket.id,
+    ticket.title,
+    ticket.requester
+  ];
+
+  return searchableFields.some((field) => normalizeSearchValue(field).includes(term));
+}
+
+function normalizeSearchValue(value) {
+  return String(value)
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 function renderTicketDetails() {
