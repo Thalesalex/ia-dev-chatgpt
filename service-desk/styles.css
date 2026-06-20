@@ -339,6 +339,12 @@ th {
   font-size: 13px;
 }
 
+.empty-table {
+  padding: 38px 16px;
+  color: var(--muted);
+  text-align: center;
+}
+
 .toast {
   position: fixed;
   right: 18px;
